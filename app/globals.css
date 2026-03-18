@@ -1,26 +1,90 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f7f4;
+  --foreground: #1a1a2e;
+
+  --navy-dark:  #0f1123;
+  --navy-mid:   #1a1c34;
+  --navy-light: #2d3061;
+
+  --gold:       #c9a84c;
+  --gold-light: #e8c96a;
+
+  --surface:      #ffffff;
+  --surface-sub:  #f2f1ee;
+
+  --ink-muted:  #6b7280;
+  --ink-subtle: #9ca3af;
+
+  --accent-teal: #00a896;
+  --status-planning:  #f59e0b;
+  --status-ongoing:   #10b981;
+  --status-completed: #6b7280;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background:   var(--background);
+  --color-foreground:   var(--foreground);
+
+  --color-navy-dark:    var(--navy-dark);
+  --color-navy-mid:     var(--navy-mid);
+  --color-navy-light:   var(--navy-light);
+
+  --color-gold:         var(--gold);
+  --color-gold-light:   var(--gold-light);
+
+  --color-surface:      var(--surface);
+  --color-surface-sub:  var(--surface-sub);
+
+  --color-ink-muted:    var(--ink-muted);
+  --color-ink-subtle:   var(--ink-subtle);
+
+  --color-accent-teal:  var(--accent-teal);
+  --color-status-planning:  var(--status-planning);
+  --color-status-ongoing:   var(--status-ongoing);
+  --color-status-completed: var(--status-completed);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f1123;
+    --foreground: #e8e6e0;
+    --surface:     #1a1c34;
+    --surface-sub: #252849;
+    --gold:        #e8c96a;
+    --gold-light:  #f5d98a;
+    --ink-muted:   #9ca3af;
+    --ink-subtle:  #6b7280;
+  }
+}
+
+@layer utilities {
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans);
+  letter-spacing: 0.3px;
+}
+
+h1, h2, h3 {
+  font-weight: 400;
+  letter-spacing: 0.8px;
+}
+
+a {
+  color: var(--accent-teal);
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--gold);
 }
