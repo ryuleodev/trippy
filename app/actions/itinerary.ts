@@ -4,13 +4,14 @@ import { revalidatePath } from "next/cache";
 import { createItinerary, deleteItinerary } from "@/lib/itinerary";
 
 export async function addItineraryAction(tripId: string, date: string, title: string,startTime: string, endTime: string,  memo: string, cost: number, costCurrency: string) {
-    await createItinerary(tripId, date, title, startTime, endTime, memo, cost, costCurrency);
+    const itinerary = await createItinerary(tripId, date, title, startTime, endTime, memo, cost, costCurrency);
     revalidatePath(`/trips/${tripId}`);
-    return;
+    return itinerary;
 }
 
 export async function deleteItineraryAction(id: string, tripId: string) {
-    await deleteItinerary(id);
+    const itinerary = await deleteItinerary(id);
     revalidatePath(`/trips/${tripId}`);
+    return itinerary;
 }
 

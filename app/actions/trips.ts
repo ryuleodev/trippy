@@ -5,13 +5,14 @@ import { revalidatePath } from "next/cache";
 
 export async function addTripAction(title: string, destination: string, startDate: string, endDate: string) {
     const id = crypto.randomUUID();
-    await createTrip(title, destination, startDate, endDate);
+    const trip = await createTrip(title, destination, startDate, endDate);
     revalidatePath("/trips");
-    return id;
+    return trip;
 }
 
 export async function deleteTripAction(id: string) {
-    await deleteTrip(id);
+    const trip = await deleteTrip(id);
     revalidatePath("/trips");
+    return trip;
 }
 
