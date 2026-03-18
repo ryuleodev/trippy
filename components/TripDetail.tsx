@@ -20,12 +20,13 @@ export default function TripDetailPage({
   initialNotes,
   initialItineraries,
 }: Props) {
-  const [activeTab, setActiveTab] = useState<"itinerary" | "notes" | "expenses">(
-    "itinerary"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "itinerary" | "notes" | "expenses"
+  >("itinerary");
   const [activeDay, setActiveDay] = useState(0);
   const [notes, setNotes] = useState<Note[]>(initialNotes);
-  const [itineraries, setItineraries] = useState<Itinerary[]>(initialItineraries);
+  const [itineraries, setItineraries] =
+    useState<Itinerary[]>(initialItineraries);
   const [noteType, setNoteType] = useState<"task" | "memo">("task");
   const [newNote, setNewNote] = useState("");
   const [expenses, _setExpenses] = useState([
@@ -84,15 +85,16 @@ export default function TripDetailPage({
   const days = getDays();
 
   const dateStr = `${days[activeDay].getFullYear()}-${String(
-    days[activeDay].getMonth() + 1
+    days[activeDay].getMonth() + 1,
   ).padStart(2, "0")}-${String(days[activeDay].getDate()).padStart(2, "0")}`;
 
   const currentDayItineraries = itineraries.filter(
-    (item) => item.date === dateStr
+    (item) => item.date === dateStr,
   );
 
   const addNote = () => {
     if (!newNote.trim()) return;
+    if (!noteType) return;
 
     const newNoteObj: Note = {
       id: crypto.randomUUID(),
@@ -104,7 +106,7 @@ export default function TripDetailPage({
     setNotes([...notes, newNoteObj]);
     setNewNote("");
 
-    addNoteAction(trip.id as string, newNoteObj.text, newNoteObj.type);
+    addNoteAction(trip.id, newNote, newNoteObj.type);
   };
 
   const deleteNote = (id: string) => {
@@ -114,7 +116,7 @@ export default function TripDetailPage({
 
   const toggleNote = (id: string) => {
     const updatedNotes = notes.map((note) =>
-      note.id === id ? { ...note, completed: !note.completed } : note
+      note.id === id ? { ...note, completed: !note.completed } : note,
     );
     setNotes(updatedNotes);
 
@@ -126,10 +128,13 @@ export default function TripDetailPage({
 
   const tasks = notes.filter((note) => note.type === "task" && !note.completed);
   const completedTasks = notes.filter(
-    (note) => note.type === "task" && note.completed
+    (note) => note.type === "task" && note.completed,
   );
   const memos = notes.filter((note) => note.type === "memo");
-  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+  const totalExpenses = expenses.reduce(
+    (sum, expense) => sum + expense.amount,
+    0,
+  );
 
   return (
     <>
@@ -270,7 +275,9 @@ export default function TripDetailPage({
                           onChange={() => toggleNote(note.id)}
                           className="w-5 h-5 cursor-pointer"
                         />
-                        <span className="flex-1 text-gray-700">{note.text}</span>
+                        <span className="flex-1 text-gray-700">
+                          {note.text}
+                        </span>
                         <button
                           onClick={() => deleteNote(note.id)}
                           className="text-red-500 hover:text-red-700 transition-colors"
@@ -324,7 +331,9 @@ export default function TripDetailPage({
                         key={note.id}
                         className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-3 hover:shadow-md transition-shadow"
                       >
-                        <span className="flex-1 text-gray-900">{note.text}</span>
+                        <span className="flex-1 text-gray-900">
+                          {note.text}
+                        </span>
                         <button
                           onClick={() => deleteNote(note.id)}
                           className="text-red-500 hover:text-red-700 transition-colors"
@@ -405,7 +414,9 @@ export default function TripDetailPage({
           tripId={trip.id as string}
           date={dateStr}
           onClose={() => setShowForm(false)}
-          onAdd={(itinerary) => {setItineraries([...itineraries, itinerary])}}
+          onAdd={(itinerary) => {
+            setItineraries([...itineraries, itinerary]);
+          }}
         />
       )}
     </>
