@@ -1,21 +1,22 @@
 "use client";
 
 import React, { useState } from "react";
-import { addItineraryAction } from "@/app/actions/itinerary";
-import { Itinerary } from "@/lib/type";
+import { addAccommodationAction } from "@/app/actions/accommodations";
+import { Accommodation } from "@/lib/type";
 
 interface Props {
   tripId: string;
-  date: string;
+  checkIn: string;
   onClose: () => void;
-  onAdd: (itinerary: Itinerary) => void;
+  onAdd: (accommodation: Accommodation) => void;
 }
 
-export default function ItineraryForm({ tripId, date, onClose, onAdd }: Props) {
-  const [title, setTitle] = useState("");
-  const [formDate, setFormDate] = useState(date);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+export default function AccommodationForm({ tripId, checkIn, onClose, onAdd }: Props) {
+  const [name, setName] = useState("");
+  const [checkInDate, setCheckInDate] = useState(checkIn);
+  const [checkOutDate, setCheckOutDate] = useState("");
+  const [address, setAddress] = useState("");
+  const [url, setUrl] = useState("");
   const [memo, setMemo] = useState("");
 
   const handleInputChange = (
@@ -24,17 +25,20 @@ export default function ItineraryForm({ tripId, date, onClose, onAdd }: Props) {
     const { name, value } = e.target;
 
     switch (name) {
-      case "title":
-        setTitle(value);
+      case "name":
+        setName(value);
         break;
-      case "date":
-        setFormDate(value);
+      case "checkInDate":
+        setCheckInDate(value);
         break;
-      case "startTime":
-        setStartTime(value);
+      case "checkOutDate":
+        setCheckOutDate(value);
         break;
-      case "endTime":
-        setEndTime(value);
+      case "address":
+        setAddress(value);
+        break;
+      case "url":
+        setUrl(value);
         break;
       case "memo":
         setMemo(value);
@@ -45,18 +49,17 @@ export default function ItineraryForm({ tripId, date, onClose, onAdd }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newItinerary = await addItineraryAction(
+    const newAccommodation = await addAccommodationAction(
       tripId,
-      formDate,
-      title,
-      startTime,
-      endTime,
+      name,
+      checkInDate,
+      checkOutDate,
+      address,
+      url,  
       memo,
-      0,
-      "JPY",
     );
 
-    onAdd(newItinerary);
+    onAdd(newAccommodation);
     onClose();
   };
 
@@ -67,11 +70,11 @@ export default function ItineraryForm({ tripId, date, onClose, onAdd }: Props) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">タイトル</label>
+            <label className="block text-sm font-medium mb-1">宿泊施設名</label>
             <input
               type="text"
-              name="title"
-              value={title}
+              name="name"
+              value={name}
               onChange={handleInputChange}
               className="w-full border rounded px-3 py-2"
               required
@@ -80,26 +83,48 @@ export default function ItineraryForm({ tripId, date, onClose, onAdd }: Props) {
 
           <div className="flex flex-col gap-3">
             <div>
-              <label className="block text-sm font-medium mb-1">開始時刻</label>
+              <label className="block text-sm font-medium mb-1">チェックイン日</label>
               <input
-                type="time"
-                name="startTime"
-                value={startTime}
+                type="date"
+                name="checkInDate"
+                value={checkInDate}
                 onChange={handleInputChange}
                 className="w-full border rounded py-2"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">終了時刻</label>
+              <label className="block text-sm font-medium mb-1">チェックアウト日</label>
               <input
-                type="time"
-                name="endTime"
-                value={endTime}
+                type="date"
+                name="checkOutDate"
+                value={checkOutDate}
                 onChange={handleInputChange}
                 className="w-full border rounded py-2"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">住所</label>
+            <textarea
+              name="address"
+              value={address}
+              onChange={handleInputChange}
+              className="w-full border rounded px-3 py-2"
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">URL</label>
+            <textarea
+              name="url"
+              value={url}
+              onChange={handleInputChange}
+              className="w-full border rounded px-3 py-2"
+              rows={3}
+            />
           </div>
 
           <div>

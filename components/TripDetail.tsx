@@ -1,24 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import { Trip, Note, Itinerary } from "@/lib/type";
+import { Trip, Note, Itinerary, Accommodation } from "@/lib/type";
 import {
   addNoteAction,
   toggleNoteAction,
   deleteNoteAction,
 } from "@/app/actions/notes";
 import ItineraryForm from "./ItineraryForm";
+import AccommodationForm from "./AccommodationForm";
 
 interface Props {
   trip: Trip;
   initialNotes: Note[];
   initialItineraries: Itinerary[];
+  initialAccommodations: Accommodation[];
 }
 
 export default function TripDetailPage({
   trip,
   initialNotes,
   initialItineraries,
+  initialAccommodations,
 }: Props) {
   const [activeTab, setActiveTab] = useState<
     "itinerary" | "notes" | "expenses"
@@ -27,6 +30,9 @@ export default function TripDetailPage({
   const [notes, setNotes] = useState<Note[]>(initialNotes);
   const [itineraries, setItineraries] =
     useState<Itinerary[]>(initialItineraries);
+  const [accommodations, setAccommodations] = useState<Accommodation[]>(
+    initialAccommodations,
+  );
   const [noteType, setNoteType] = useState<"task" | "memo">("task");
   const [newNote, setNewNote] = useState("");
   const [expenses, _setExpenses] = useState([
@@ -58,7 +64,7 @@ export default function TripDetailPage({
       memo: "スカイツリーチケット",
     },
   ]);
-  const [showForm, setShowForm] = useState(false);
+
 
   const tabs = [
     { id: "itinerary", label: "旅程" },
@@ -108,6 +114,16 @@ export default function TripDetailPage({
 
     addNoteAction(trip.id, newNote, newNoteObj.type);
   };
+
+  const [showForm, setShowForm] = useState(false);
+  const [showAccommodationForm, setShowAccommodationForm] = useState(false);
+  const todayAccommodations = accommodations.filter((acc) => {
+    const checkIn = new Date(acc.checkIn);
+    const checkOut = new Date(acc.checkOut);
+    const today = new Date(dateStr);
+    return checkIn <= today && today <= checkOut;
+  });
+  const hasAccommodationToday = todayAccommodations.length > 0;
 
   const deleteNote = (id: string) => {
     setNotes(notes.filter((note) => note.id !== id));
@@ -180,13 +196,28 @@ export default function TripDetailPage({
 
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold">日付 {activeDay + 1}</h2>
-                <button
-                  onClick={() => setShowForm(true)}
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium whitespace-nowrap"
-                >
-                  旅程追加
-                </button>
+                <h2 className="text-xl font-bold">
+                  {days[activeDay].toLocaleDateString("ja-JP", {
+                    month: "numeric",
+                    day: "numeric",
+                  })}
+                </h2>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowForm(true)}
+                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium whitespace-nowrap"
+                  >
+                    旅程追加
+                  </button>
+                  {!hasAccommodationToday && (
+                    <button
+                      onClick={() => setShowAccommodationForm(true)}
+                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium whitespace-nowrap"
+                    >
+                      ホテル追加
+                    </button>
+                  )}
+                </div>
               </div>
 
               {currentDayItineraries.map((item) => (
@@ -208,6 +239,22 @@ export default function TripDetailPage({
                   この日の旅程はまだ登録されていません
                 </div>
               )}
+
+              {accommodations
+                .filter((acc) => acc.checkIn === dateStr)
+                .map((acc) => (
+                  <div
+                    key={acc.id}
+                    className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow mt-4"
+                  >
+                    <div className="flex gap-4">
+                      <div className="text-yellow-600 font-bold whitespace-nowrap">
+                        宿泊: {acc.name}
+                      </div>
+                      <div className="text-gray-700">{acc.address}</div>
+                    </div>
+                  </div>
+                ))}
             </div>
           </div>
         )}
@@ -416,6 +463,17 @@ export default function TripDetailPage({
           onClose={() => setShowForm(false)}
           onAdd={(itinerary) => {
             setItineraries([...itineraries, itinerary]);
+          }}
+        />
+      )}
+
+      {showAccommodationForm && (
+        <AccommodationForm
+          tripId={trip.id as string}
+          checkIn={dateStr}
+          onClose={() => setShowAccommodationForm(false)}
+          onAdd={(accommodation) => {
+            setAccommodations([...accommodations, accommodation]);
           }}
         />
       )}

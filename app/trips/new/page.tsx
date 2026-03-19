@@ -31,7 +31,7 @@ export default function NewTripPage() {
     };
 
     return (
-        <div className="max-w-lg">
+        <div className="w-full max-w-lg mx-auto">
             <DetailHeader title="新しい旅行を追加" />
             
             <form onSubmit={handleSubmit} className="space-y-4 bg-surface rounded-xl shadow-sm p-6 m-3 mt-6">
@@ -68,7 +68,7 @@ export default function NewTripPage() {
                         name="startDate"
                         value={formData.startDate}
                         onChange={handleChange}
-                        className="w-full border rounded px-3 py-2"
+                        className="w-full border rounded py-2"
                         required
                     />
                 </div>
@@ -80,7 +80,7 @@ export default function NewTripPage() {
                         name="endDate"
                         value={formData.endDate}
                         onChange={handleChange}
-                        className="w-full border rounded px-3 py-2"
+                        className="w-full border rounded py-2"
                         required
                     />
                 </div>
