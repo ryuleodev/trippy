@@ -2,6 +2,8 @@ import TripList from "@/components/TripList";
 import getAllTrips from "@/lib/trip";
 import { Trip } from "@/lib/type";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const trips: Trip[] = await getAllTrips();
   const upcomingTrips = trips.filter((t) => t.status === 'planning').length;

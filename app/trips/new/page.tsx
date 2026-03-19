@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DetailHeader from '@/components/DetailHeader';
 
+export const dynamic = 'force-dynamic';
+
 export default function NewTripPage() {
     const route = useRouter();
     const [formData, setFormData] = useState({
