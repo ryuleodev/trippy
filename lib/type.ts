@@ -49,7 +49,7 @@ export interface Expense {
   amount: number;
   currency: string;
   paidByMemberId: string;
-  splitAmongMemberIds?: string[];
-  memo: string | null;
+  splitMemberIds?: string[];
+  title: string | null;
   date: string;
 }

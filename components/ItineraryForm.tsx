@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { addItineraryAction } from "@/app/actions/itinerary";
+import { addItineraryAction, updateItineraryAction } from "@/app/actions/itinerary";
 import { Itinerary } from "@/lib/type";
 
 interface Props {
@@ -9,14 +9,23 @@ interface Props {
   date: string;
   onClose: () => void;
   onAdd: (itinerary: Itinerary) => void;
+  initialValues?: Itinerary;
+  submitLabel?: string;
 }
 
-export default function ItineraryForm({ tripId, date, onClose, onAdd }: Props) {
-  const [title, setTitle] = useState("");
+export default function ItineraryForm({
+  tripId,
+  date,
+  onClose,
+  onAdd,
+  initialValues,
+  submitLabel,
+}: Props) {
+  const [title, setTitle] = useState(initialValues?.title ?? "");
+  const [startTime, setStartTime] = useState(initialValues?.startTime ?? "");
+  const [endTime, setEndTime] = useState(initialValues?.endTime ?? "");
+  const [memo, setMemo] = useState(initialValues?.memo ?? "");
   const [formDate, setFormDate] = useState(date);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [memo, setMemo] = useState("");
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -45,24 +54,43 @@ export default function ItineraryForm({ tripId, date, onClose, onAdd }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newItinerary = await addItineraryAction(
-      tripId,
-      formDate,
-      title,
-      startTime,
-      endTime,
-      memo,
-      0,
-      "JPY",
-    );
+    if (initialValues) {
+      const updatedItinerary = await updateItineraryAction(
+        initialValues.id,
+        tripId,
+        formDate,
+        title,
+        startTime,
+        endTime,
+        memo,
+        initialValues.cost || 0,
+        initialValues.costCurrency || "JPY",
+      );
+      onAdd(updatedItinerary);
+    } else {
+      const newItinerary = await addItineraryAction(
+        tripId,
+        formDate,
+        title,
+        startTime,
+        endTime,
+        memo,
+        0,
+        "JPY",
+      );
+  
+      onAdd(newItinerary);
+    }
 
-    onAdd(newItinerary);
     onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black/40 z-40" onClick={onClose}>
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-surface rounded-t-2xl p-8 animate-slide-up" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="fixed bottom-0 left-0 right-0 z-50 bg-surface rounded-t-2xl p-8 animate-slide-up"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h1 className="text-3xl font-bold mb-6">新しい旅程を追加</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -125,7 +153,7 @@ export default function ItineraryForm({ tripId, date, onClose, onAdd }: Props) {
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded font-medium hover:bg-blue-700"
             >
-              保存
+              {submitLabel ?? "保存"}
             </button>
           </div>
         </form>

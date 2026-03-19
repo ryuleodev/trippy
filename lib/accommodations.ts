@@ -46,3 +46,36 @@ export async function addAccommodation(
     memo: memo ?? "",
   };
 }
+
+export async function deleteAccommodation(id: string): Promise<void> {
+  await db.execute({
+    sql: "DELETE FROM accommodations WHERE id = ?",
+    args: [id],
+  });
+}       
+
+export async function updateAccommodation(
+    id: string,
+    name: string,
+    checkIn: string,
+    checkOut: string,
+    address: string | null,
+    url: string | null,
+    memo: string | null
+): Promise<Accommodation> {
+  await db.execute({
+    sql: "UPDATE accommodations SET name = ?, check_in = ?, check_out = ?, address = ?, url = ?, memo = ? WHERE id = ?",
+    args: [name, checkIn, checkOut, address, url, memo, id],
+  });
+
+  return {
+    id,
+    tripId: "",
+    name,
+    checkIn,
+    checkOut,
+    address: address ?? "",
+    url: url ?? "",
+    memo: memo ?? "",
+  };
+}

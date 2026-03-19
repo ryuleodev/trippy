@@ -58,3 +58,32 @@ export async function deleteItinerary(id: string): Promise<void> {
     args: [id],
   });
 }
+
+export async function updateItinerary(
+    id: string,
+    tripId: string,
+    date: string,
+    title: string,
+    startTime: string,
+    endTime: string,
+    memo: string,
+    cost: number,
+    costCurrency: string
+): Promise<Itinerary> {
+  await db.execute({
+    sql: "UPDATE itineraries SET date = ?, title = ?, start_time = ?, end_time = ?, memo = ?, cost = ?, cost_currency = ? WHERE id = ?",
+    args: [date, title, startTime, endTime, memo, cost, costCurrency, id],
+  });
+
+  return {
+    id,
+    tripId,
+    date,
+    title,
+    startTime,
+    endTime,
+    memo,
+    cost,
+    costCurrency,
+  };
+}

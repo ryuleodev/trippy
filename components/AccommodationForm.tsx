@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { addAccommodationAction } from "@/app/actions/accommodations";
+import {
+  addAccommodationAction,
+  updateAccommodationAction,
+} from "@/app/actions/accommodations";
 import { Accommodation } from "@/lib/type";
 
 interface Props {
@@ -9,15 +12,28 @@ interface Props {
   checkIn: string;
   onClose: () => void;
   onAdd: (accommodation: Accommodation) => void;
+  initialValues?: Accommodation;
+  submitLabel?: string;
 }
 
-export default function AccommodationForm({ tripId, checkIn, onClose, onAdd }: Props) {
-  const [name, setName] = useState("");
-  const [checkInDate, setCheckInDate] = useState(checkIn);
-  const [checkOutDate, setCheckOutDate] = useState("");
-  const [address, setAddress] = useState("");
-  const [url, setUrl] = useState("");
-  const [memo, setMemo] = useState("");
+export default function AccommodationForm({
+  tripId,
+  checkIn,
+  onClose,
+  onAdd,
+  initialValues,
+  submitLabel,
+}: Props) {
+  const [name, setName] = useState(initialValues?.name ?? "");
+  const [checkInDate, setCheckInDate] = useState(
+    initialValues?.checkIn ?? checkIn,
+  );
+  const [checkOutDate, setCheckOutDate] = useState(
+    initialValues?.checkOut ?? "",
+  );
+  const [address, setAddress] = useState(initialValues?.address ?? "");
+  const [url, setUrl] = useState(initialValues?.url ?? "");
+  const [memo, setMemo] = useState(initialValues?.memo ?? "");
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -49,24 +65,45 @@ export default function AccommodationForm({ tripId, checkIn, onClose, onAdd }: P
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newAccommodation = await addAccommodationAction(
-      tripId,
-      name,
-      checkInDate,
-      checkOutDate,
-      address,
-      url,  
-      memo,
-    );
+    if (initialValues) {
+      const updatedAccommodation = await updateAccommodationAction(
+        initialValues.id,
+        tripId,
+        name,
+        checkInDate,
+        checkOutDate,
+        address,
+        url,
+        memo,
+      );
 
-    onAdd(newAccommodation);
+      onAdd(updatedAccommodation);
+    } else {
+      const newAccommodation = await addAccommodationAction(
+        tripId,
+        name,
+        checkInDate,
+        checkOutDate,
+        address,
+        url,
+        memo,
+      );
+
+      onAdd(newAccommodation);
+    }
+
     onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black/40 z-40" onClick={onClose}>
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-surface rounded-t-2xl p-8 animate-slide-up" onClick={(e) => e.stopPropagation()}>
-        <h1 className="text-3xl font-bold mb-6">新しい旅程を追加</h1>
+      <div
+        className="fixed bottom-0 left-0 right-0 z-50 bg-surface rounded-t-2xl p-8 animate-slide-up"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h1 className="text-3xl font-bold mb-6">
+          {initialValues ? "宿泊施設を編集" : "新しい宿泊施設を追加"}
+        </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -83,7 +120,9 @@ export default function AccommodationForm({ tripId, checkIn, onClose, onAdd }: P
 
           <div className="flex flex-col gap-3">
             <div>
-              <label className="block text-sm font-medium mb-1">チェックイン日</label>
+              <label className="block text-sm font-medium mb-1">
+                チェックイン日
+              </label>
               <input
                 type="date"
                 name="checkInDate"
@@ -94,7 +133,9 @@ export default function AccommodationForm({ tripId, checkIn, onClose, onAdd }: P
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">チェックアウト日</label>
+              <label className="block text-sm font-medium mb-1">
+                チェックアウト日
+              </label>
               <input
                 type="date"
                 name="checkOutDate"
@@ -150,7 +191,7 @@ export default function AccommodationForm({ tripId, checkIn, onClose, onAdd }: P
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded font-medium hover:bg-blue-700"
             >
-              保存
+              {submitLabel ?? "保存"}
             </button>
           </div>
         </form>
