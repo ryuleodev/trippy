@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Trip, Note, Itinerary, Accommodation } from "@/lib/type";
+import { Trip, Note, Itinerary, Accommodation, Member, Expense } from "@/lib/type";
 import {
   addNoteAction,
   toggleNoteAction,
@@ -9,12 +9,16 @@ import {
 } from "@/app/actions/notes";
 import ItineraryForm from "./ItineraryForm";
 import AccommodationForm from "./AccommodationForm";
+import ExpenseForm from "./ExpenseForm";
+import { addMemberAction, deleteMemberAction } from "@/app/actions/members";
 
 interface Props {
   trip: Trip;
   initialNotes: Note[];
   initialItineraries: Itinerary[];
   initialAccommodations: Accommodation[];
+  initialMembers: Member[];
+  initialExpenses: Expense[];
 }
 
 export default function TripDetailPage({
@@ -22,9 +26,11 @@ export default function TripDetailPage({
   initialNotes,
   initialItineraries,
   initialAccommodations,
+  initialMembers,
+  initialExpenses,
 }: Props) {
   const [activeTab, setActiveTab] = useState<
-    "itinerary" | "notes" | "expenses"
+    "itinerary" | "notes" | "expenses" | "members"
   >("itinerary");
   const [activeDay, setActiveDay] = useState(0);
   const [notes, setNotes] = useState<Note[]>(initialNotes);
@@ -35,41 +41,17 @@ export default function TripDetailPage({
   );
   const [noteType, setNoteType] = useState<"task" | "memo">("task");
   const [newNote, setNewNote] = useState("");
-  const [expenses, _setExpenses] = useState([
-    {
-      id: "1",
-      amount: 15000,
-      date: new Date("2024-01-01"),
-      paidBy: "太郎",
-      forPerson: "太郎",
-      currency: "JPY",
-      memo: "ホテル1泊目",
-    },
-    {
-      id: "2",
-      amount: 8000,
-      date: new Date("2024-01-01"),
-      paidBy: "太郎",
-      forPerson: "花子",
-      currency: "JPY",
-      memo: "夜食",
-    },
-    {
-      id: "3",
-      amount: 3000,
-      date: new Date("2024-01-02"),
-      paidBy: "花子",
-      forPerson: "太郎",
-      currency: "JPY",
-      memo: "スカイツリーチケット",
-    },
-  ]);
-
+  const [members, setMembers] = useState<Member[]>(initialMembers);
+  const [newMemberName, setNewMemberName] = useState("");
+  const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
+  const [showExpenseForm, setShowExpense] = useState(false);
+  const [showExpenseSummary, setShowExpenseSummary] = useState(false);
 
   const tabs = [
     { id: "itinerary", label: "旅程" },
     { id: "notes", label: "メモ・タスク" },
     { id: "expenses", label: "費用" },
+    { id: "members", label: "メンバー" },
   ] as const;
 
   const getDays = () => {
@@ -142,6 +124,18 @@ export default function TripDetailPage({
     }
   };
 
+  const addMember = async () => {
+    if (!newMemberName.trim()) return;
+    const member = await addMemberAction(trip.id as string, newMemberName);
+    setMembers([...members, member]);
+    setNewMemberName("");
+  };
+
+  const deleteMember = (id: string) => {
+    setMembers(members.filter((m) => m.id !== id));
+    deleteMemberAction(id, trip.id as string);
+  };
+
   const tasks = notes.filter((note) => note.type === "task" && !note.completed);
   const completedTasks = notes.filter(
     (note) => note.type === "task" && note.completed,
@@ -151,17 +145,17 @@ export default function TripDetailPage({
     (sum, expense) => sum + expense.amount,
     0,
   );
-
+  
   return (
     <>
       <div className="px-4">
         <div className="p-4">
-          <div className="flex gap-2 border-b mb-6">
+          <div className="flex gap-3 border-b mb-3">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 font-medium transition-colors ${
+                className={`px-2 py-2 font-medium transition-colors ${
                   activeTab === tab.id
                     ? "border-b-2 border-blue-500 text-blue-600"
                     : "text-gray-600 hover:text-gray-800"
@@ -261,8 +255,8 @@ export default function TripDetailPage({
 
         {activeTab === "notes" && (
           <div>
-            <div className="flex gap-2 mb-6">
-              <div className="flex gap-2 bg-gray-200 rounded-lg p-1">
+            <div className="mb-6 space-y-3">
+              <div className="flex gap-2 bg-gray-200 rounded-lg p-1 w-fit">
                 <button
                   onClick={() => setNoteType("task")}
                   className={`px-4 py-2 rounded font-medium transition-colors ${
@@ -285,21 +279,23 @@ export default function TripDetailPage({
                 </button>
               </div>
 
-              <input
-                type="text"
-                value={newNote}
-                onChange={(e) => setNewNote(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && addNote()}
-                placeholder="メモやタスクを入力..."
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <div className="flex gap-2 mb-6">
+                <input
+                  type="text"
+                  value={newNote}
+                  onChange={(e) => setNewNote(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && addNote()}
+                  placeholder="メモやタスクを入力..."
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
 
-              <button
-                onClick={addNote}
-                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
-              >
-                追加
-              </button>
+                <button
+                  onClick={addNote}
+                  className="w-fit px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                >
+                  追加
+                </button>
+              </div>
             </div>
 
             <div className="space-y-6">
@@ -398,11 +394,26 @@ export default function TripDetailPage({
 
         {activeTab === "expenses" && (
           <div>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
               <p className="text-gray-600">合計費用</p>
               <p className="text-3xl font-bold text-blue-600">
                 ¥{totalExpenses.toLocaleString()}
               </p>
+            </div>
+
+            <div className="flex gap-3 mb-6">
+              <button
+                onClick={() => setShowExpense(true)}
+                className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              >
+                費用追加
+              </button>
+              <button
+                
+                className="flex-1 bg-white border border-blue-300 text-blue-600 py-3 rounded-lg font-medium hover:bg-blue-50 transition-colors"
+              >
+                費用概要
+              </button>
             </div>
 
             {expenses.length === 0 ? (
@@ -423,7 +434,7 @@ export default function TripDetailPage({
                           {expense.amount.toLocaleString()}
                         </p>
                         <p className="text-sm text-gray-500">
-                          {expense.date.toLocaleDateString("ja-JP")}
+                          {new Date(expense.date).toLocaleDateString("ja-JP")}
                         </p>
                       </div>
                     </div>
@@ -432,27 +443,63 @@ export default function TripDetailPage({
                       <div className="flex justify-between">
                         <span className="text-gray-600">支払者:</span>
                         <span className="font-medium text-gray-800">
-                          {expense.paidBy}
+                          {members.find((m) => m.id === expense.paidByMemberId)?.name ?? "不明"}
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">対象者:</span>
-                        <span className="font-medium text-gray-800">
-                          {expense.forPerson}
-                        </span>
-                      </div>
-                      {expense.memo && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">メモ:</span>
-                          <span className="text-gray-800">{expense.memo}</span>
-                        </div>
-                      )}
                     </div>
                   </div>
                 ))}
               </div>
             )}
           </div>
+        )}
+
+        {activeTab === "members" && (
+          <>
+            <div className="mb-6 flex items-center gap-4">
+              <input
+                type="text"
+                value={newMemberName}
+                onChange={(e) => setNewMemberName(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && addMember()}
+                placeholder="メンバー名を入力..."
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+
+              <button
+                onClick={addMember}
+                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+              >
+                追加
+              </button>
+            </div>
+            <div>
+              {members.length === 0 ? (
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-gray-500">
+                  メンバーが登録されていません
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {members.map((member) => (
+                    <div
+                      key={member.id}
+                      className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-3 hover:shadow-md transition-shadow"
+                    >
+                      <span className="flex-1 text-gray-700">
+                        {member.name}
+                      </span>
+                      <button
+                        onClick={() => deleteMember(member.id)}
+                        className="text-red-500 hover:text-red-700 transition-colors"
+                      >
+                        削除
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
         )}
       </div>
 
@@ -474,6 +521,18 @@ export default function TripDetailPage({
           onClose={() => setShowAccommodationForm(false)}
           onAdd={(accommodation) => {
             setAccommodations([...accommodations, accommodation]);
+          }}
+        />
+      )}
+
+      {showExpenseForm && (
+        <ExpenseForm
+          tripId={trip.id as string}
+          members={members}
+          initialDate={dateStr}
+          onClose={() => setShowExpense(false)}
+          onAdd={(expense) => {
+            setExpenses([...expenses, expense]);
           }}
         />
       )}

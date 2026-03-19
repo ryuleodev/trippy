@@ -36,3 +36,20 @@ export interface Accommodation {
   url: string | null;
   memo: string | null;
 }
+
+export interface Member {
+  id: string;
+  tripId: string;
+  name: string;
+}
+
+export interface Expense {
+  id: string;
+  tripId: string;
+  amount: number;
+  currency: string;
+  paidByMemberId: string;
+  splitAmongMemberIds?: string[];
+  memo: string | null;
+  date: string;
+}

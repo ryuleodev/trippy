@@ -14,8 +14,7 @@ export default async function Home() {
       <div className="max-w-lg mx-auto">
         <h1 className="text-5xl font-bold mb-5 text-navy-light">Trippy</h1>
 
-        {/* サマリーカード */}
-        <div className="grid grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-3 gap-3 mb-8">
           <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition duration-300 p-6 border-l-4 border-navy-light">
             <p className="text-foreground text-sm font-medium mb-2">総旅行数</p>
             <p className="text-4xl font-bold text-navy-light">{trips.length}</p>
@@ -30,7 +29,6 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* 旅行一覧 */}
         <TripList trips={trips} />
       </div>
     </div>
