@@ -6,7 +6,7 @@ export default function FAB() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const isDetailPage = /^\/trips\/(?!new$)[^/]+/.test(pathname);
+  const isDetailPage = /^\/trips\//.test(pathname);
   if (isDetailPage) return null;
 
   return (
