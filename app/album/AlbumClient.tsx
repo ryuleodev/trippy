@@ -88,7 +88,7 @@ function AddAlbumModal({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="例: 1日目の写真"
-                className="w-full bg-surface-sub border-0 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-ink-subtle"
+                className="w-full bg-surface-sub border-0 rounded-xl px-4 py-3 text-md text-foreground placeholder:text-ink-subtle"
                 required
               />
             </div>
@@ -110,7 +110,7 @@ function AddAlbumModal({
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://www.icloud.com/photos/..."
-                  className="w-full bg-surface-sub border-0 rounded-xl pl-10 pr-4 py-3 text-sm text-foreground placeholder:text-ink-subtle"
+                  className="w-full bg-surface-sub border-0 rounded-xl pl-10 pr-4 py-3 text-md text-foreground placeholder:text-ink-subtle"
                   required
                 />
               </div>

@@ -49,7 +49,6 @@ export default function NewTripPage() {
             </svg>
           </div>
           <h2 className="text-white font-semibold text-lg">旅の計画を始めよう</h2>
-          <p className="text-white/40 text-sm mt-1">基本情報を入力するだけで始められます</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -72,7 +71,7 @@ export default function NewTripPage() {
                   value={formData.title}
                   onChange={handleChange}
                   className="w-full bg-surface-sub border border-surface-sub rounded-xl pl-10 pr-4 py-3
-                    text-foreground placeholder:text-ink-subtle text-sm"
+                    text-foreground placeholder:text-ink-subtle text-md"
                   placeholder="例: 沖縄家族旅行 2026"
                   required
                 />
@@ -98,7 +97,7 @@ export default function NewTripPage() {
                   value={formData.destination}
                   onChange={handleChange}
                   className="w-full bg-surface-sub border border-surface-sub rounded-xl pl-10 pr-4 py-3
-                    text-foreground placeholder:text-ink-subtle text-sm"
+                    text-foreground placeholder:text-ink-subtle text-md"
                   placeholder="例: 沖縄県"
                   required
                 />
@@ -117,8 +116,8 @@ export default function NewTripPage() {
                   name="startDate"
                   value={formData.startDate}
                   onChange={handleChange}
-                  className="w-full bg-surface-sub border border-surface-sub rounded-xl px-3 py-3
-                    text-foreground text-sm"
+                  className="w-full bg-surface-sub border border-surface-sub rounded-xl py-3
+                    text-foreground text-md"
                   required
                 />
               </div>
@@ -129,8 +128,8 @@ export default function NewTripPage() {
                   name="endDate"
                   value={formData.endDate}
                   onChange={handleChange}
-                  className="w-full bg-surface-sub border border-surface-sub rounded-xl px-3 py-3
-                    text-foreground text-sm"
+                  className="w-full bg-surface-sub border border-surface-sub rounded-xl py-3
+                    text-foreground text-md"
                   required
                 />
               </div>
