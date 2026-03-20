@@ -74,7 +74,7 @@ function ActionButtons({
   isDeleting: boolean;
 }) {
   return (
-    <div className="flex gap-2.5 mt-6">
+    <div className="flex gap-2.5 mt-6 mb-3">
       <button
         onClick={onClose}
         className="flex-1 bg-surface-sub text-foreground py-3.5 rounded-xl font-medium text-sm
