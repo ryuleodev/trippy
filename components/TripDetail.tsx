@@ -34,7 +34,7 @@ interface Props {
 /* ── BottomSheet ──────────────────────────────────── */
 function BottomSheet({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-40 flex flex-col justify-end" onClick={onClose}>
+    <div className="fixed inset-0 z-[60] flex flex-col justify-end" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50 animate-fade-in" />
       <div
         className="relative bg-surface rounded-t-3xl max-h-[85vh] overflow-y-auto animate-slide-up"
@@ -43,7 +43,7 @@ function BottomSheet({ onClose, children }: { onClose: () => void; children: Rea
         <div className="flex justify-center pt-3 pb-1">
           <div className="w-10 h-1 rounded-full bg-ink-subtle/30" />
         </div>
-        <div className="px-5 pb-8">
+        <div className="px-5 pb-12 safe-area-pb">
           {children}
         </div>
       </div>

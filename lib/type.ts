@@ -43,6 +43,16 @@ export interface Member {
   name: string;
 }
 
+export interface AlbumLink {
+  id: string;
+  tripId: string;
+  title: string;
+  url: string;
+  createdAt: string;
+  tripTitle?: string;
+  tripDestination?: string;
+}
+
 export interface Expense {
   id: string;
   tripId: string;

@@ -41,7 +41,7 @@ export default function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const isDetailPage = /^\/trips\/(?!new$)[^/]+/.test(pathname);
+  const isDetailPage = /^\/trips\//.test(pathname);
   if (isDetailPage) return null;
 
   return (
