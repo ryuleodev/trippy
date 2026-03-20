@@ -14,9 +14,14 @@ export default function FAB() {
       onClick={() => router.push("/trips/new")}
       aria-label="旅行を追加"
       className="fixed bottom-[2.5rem] left-1/2 -translate-x-1/2 z-50
-        w-14 h-14 rounded-full shadow-lg
-        bg-gold hover:bg-gold-light active:scale-95
-        flex items-center justify-center transition-all"
+        w-14 h-14 rounded-full
+        gradient-gold
+        flex items-center justify-center
+        active:scale-90 transition-transform duration-150
+        animate-pulse-glow"
+      style={{
+        boxShadow: '0 4px 20px rgba(201, 168, 76, 0.5), 0 2px 8px rgba(0,0,0,0.3)'
+      }}
     >
       <svg
         className="w-6 h-6 text-navy-dark"
@@ -27,7 +32,7 @@ export default function FAB() {
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          strokeWidth={2}
+          strokeWidth={2.5}
           d="M12 4v16m8-8H4"
         />
       </svg>
