@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8f7f4;
+  --background: #f5f4f0;
   --foreground: #1a1a2e;
 
   --navy-dark:  #0f1123;
@@ -66,6 +66,9 @@
   .safe-area-pb {
     padding-bottom: env(safe-area-inset-bottom);
   }
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top);
+  }
 }
 
 body {
@@ -73,6 +76,8 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans);
   letter-spacing: 0.3px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3 {
@@ -89,17 +94,142 @@ a:hover {
   color: var(--gold);
 }
 
+/* ── Animations ─────────────────────────────────── */
+
 @keyframes slide-up {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.4); }
+  50%       { box-shadow: 0 0 0 10px rgba(201, 168, 76, 0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 @layer utilities {
-  .animate-slide-up {
-    animation: slide-up 0.3s ease-out;
+  .animate-slide-up   { animation: slide-up 0.35s cubic-bezier(0.32, 0.72, 0, 1); }
+  .animate-fade-in    { animation: fade-in 0.3s ease-out; }
+  .animate-fade-in-up { animation: fade-in-up 0.4s ease-out both; }
+  .animate-scale-in   { animation: scale-in 0.25s ease-out; }
+  .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
   }
+
+  .glass-dark {
+    background: rgba(15, 17, 35, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .gradient-gold {
+    background: linear-gradient(135deg, #c9a84c 0%, #e8c96a 100%);
+  }
+
+  .gradient-navy {
+    background: linear-gradient(160deg, #0f1123 0%, #1a1c34 50%, #2d3061 100%);
+  }
+
+  .gradient-hero {
+    background: linear-gradient(160deg, #0f1123 0%, #1e2044 40%, #2d3061 100%);
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #c9a84c, #f5d98a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .card-shadow {
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .card-shadow-lg {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .inset-shadow {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+}
+
+/* scrollbar非表示 */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* チェックボックスカスタム */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--ink-subtle);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--accent-teal);
+  border-color: var(--accent-teal);
+}
+
+input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 8px;
+  height: 12px;
+  border: 2px solid white;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+/* フォーム入力カスタム */
+input[type="text"],
+input[type="date"],
+input[type="number"],
+textarea,
+select {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
 }
